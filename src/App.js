@@ -1,21 +1,22 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
+import { inject, observer } from 'mobx-react';
+import TodoView from './components/TodoView';
+import TodoCounterView from './components/TodoCounterView';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
-    );
-  }
-}
+const randomId = () => Math.floor(Math.random() * 1000).toString(36);
+
+@inject('store')
+const App = observer(props =>
+    <div>
+      <button onClick={e => props.store.addTodo(randomId(), "New Task")}>
+        Add Task
+      </button>
+      {props.store.todos
+        .values()
+        .map(todo => <TodoView store={props.store} todo={todo} />)}
+      <TodoCounterView store={props.store} />
+    </div>
+  );
 
 export default App;
